@@ -42,37 +42,37 @@
 # Ejemplo de uso para la librería, mostrará el índice de CO2 y TVOC en el aire.
 
 from time import sleep
-from CJMCU811 import B
-from CJMCU811_eco2 import CJMCU811_eco2
-from CJMCU811_tvoc import CJMCU811_tvoc
+from BME680 import BME680
 
-cjmcu811 = CJMCU811()
-cjmcu811_eco2 = CJMCU811_eco2()
-cjmcu811_tvoc = CJMCU811_tvoc()
+bme680 = BME680
 
-# Variables para simular variación de humedad y temperatura.
-humidity = 60 #int
-temperature = 25.0 #float
-
-sleep(2)
-
-while True:
-    try:
+try:
+    while True:
         print('Debug Clase Padre')
-        cjmcu811.set_temperature_humidity(humidity, temperature)
-        cjmcu811.debug()
+
+        if bme680.get_sensor_data():
+            output = '{0:.2f} C,{1:.2f} hPa,{2:.2f} %RH'.format(
+                bme680.data.temperature,
+                bme680.data.pressure,
+                bme680.data.humidity)
+
+            if bme680.data.heat_stable:
+                print('{0},{1} Ohms'.format(
+                    output,
+                    bme680.data.gas_resistance))
+
+            else:
+                print(output)
+
         sleep(3)
         print('')
         print('Debug de cada Clase Hija')
-        cjmcu811_eco2.debug()
+        #???.debug()
+        #???.debug()
+        #???.debug()
+        #???.debug()
+
         sleep(3)
-        cjmcu811_tvoc.debug()
-        sleep(3)
-        print('')
-    except:
-        print('>>>>>>>>>>>> | <<<<<<<<<<<<')
-        print('Ha ocurrido un error y se reiniciará el sensor')
-        #cjmcu811.sensor.reset()
-        print('Esperando 30 segundos antes de continuar')
-        print('>>>>>>>>>>>> | <<<<<<<<<<<<')
-        sleep(30)
+
+except KeyboardInterrupt:
+    pass
