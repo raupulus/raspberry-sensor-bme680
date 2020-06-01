@@ -148,6 +148,7 @@ class BME680:
         Devuelve la lectura de la resistencia a gases.
         :return: Float|None
         """
+        time.sleep(0.2)
         if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
             gas_resistance = self.sensor.data.gas_resistance
 
@@ -165,6 +166,9 @@ class BME680:
         en porcentaje del 1-100%.
         :return: Float|None
         """
+
+        time.sleep(0.2)
+
         if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
             gas = self.sensor.data.gas_resistance
 
@@ -214,7 +218,7 @@ class BME680:
                 "pressure": self.sensor.data.pressure,
                 "humidity": self.sensor.data.humidity,
                 "gas_resistance": self.sensor.data.gas_resistance,
-                "air_quality": self.air_quality
+                "air_quality": self.air_quality()
             }
 
         return None
