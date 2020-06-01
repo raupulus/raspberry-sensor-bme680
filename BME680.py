@@ -44,7 +44,7 @@
 
 
 import bme680
-
+import datetime
 
 class BME680:
     table_name = 'table_weather'
@@ -166,11 +166,57 @@ class BME680:
         Plantea campos como modelo de datos para una base de datos y poder ser
         tomados desde el exterior.
         """
-        pass
+        return {
+            'temperature': {
+                'type': 'Numeric',
+                'params': {
+                    'precision': 15,
+                    'asdecimal': True,
+                    'scale': 4
+                },
+                'others': None,
+            },
+            'pressure': {
+                'type': 'Numeric',
+                'params': {
+                    'precision': 15,
+                    'asdecimal': True,
+                    'scale': 4
+                },
+                'others': None,
+            },
+            'humidity': {
+                'type': 'Numeric',
+                'params': {
+                    'precision': 15,
+                    'asdecimal': True,
+                    'scale': 4
+                },
+                'others': None,
+            },
+            'gas_resistance': {
+                'type': 'Numeric',
+                'params': {
+                    'precision': 22,
+                    'asdecimal': True,
+                    'scale': 11
+                },
+                'others': None,
+            },
+            'created_at': {
+                'type': 'DateTime',
+                'params': None,
+                'others': {
+                    'default': datetime.datetime.utcnow
+                },
+            },
+        }
 
     def debug(self):
         """
         Función para depurar funcionamiento del modelo proyectando datos por
         consola.
         """
-        pass
+        for sensor, data in self.get_all_data():
+            print('Valor del sensor ' + sensor + ': ' + data)
+

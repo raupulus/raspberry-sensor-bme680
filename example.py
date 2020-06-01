@@ -49,20 +49,7 @@ bme680 = BME680
 try:
     while True:
         print('Debug Clase Padre')
-
-        if bme680.get_sensor_data():
-            output = '{0:.2f} C,{1:.2f} hPa,{2:.2f} %RH'.format(
-                bme680.data.temperature,
-                bme680.data.pressure,
-                bme680.data.humidity)
-
-            if bme680.data.heat_stable:
-                print('{0},{1} Ohms'.format(
-                    output,
-                    bme680.data.gas_resistance))
-
-            else:
-                print(output)
+        bme680.debug()
 
         sleep(3)
         print('')
