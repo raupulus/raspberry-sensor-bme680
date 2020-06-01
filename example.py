@@ -39,12 +39,12 @@
 # Guía de estilos aplicada: PEP8
 
 # #           Descripción           # #
-# Ejemplo de uso para la librería, mostrará el índice de CO2 y TVOC en el aire.
+# Ejemplo de uso para la librería, mostrará humedad, temperatura, presión y gas.
 
 from time import sleep
 from BME680 import BME680
 
-bme680 = BME680
+bme680 = BME680()
 
 try:
     while True:
