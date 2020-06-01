@@ -45,10 +45,22 @@
 
 import bme680
 import datetime
+import time
+
 
 class BME680:
     table_name = 'table_weather'
     sensor = None
+
+    # Set the humidity baseline to 40%, an optimal indoor humidity.
+    # Outdoor → 50%
+    hum_baseline = 50.0
+
+    # This sets the balance between humidity and gas reading in the
+    # calculation of air_quality_score (25:75, humidity:gas)
+    hum_weighting = 0.25
+
+    gas_baseline = 300000.00
 
     def __init__(self, primary=True):
         # Instanciando sensor.
@@ -137,12 +149,57 @@ class BME680:
         :return: Float|None
         """
         if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
-            return {
-                "temperature": self.sensor.data.temperature,
-                "pressure": self.sensor.data.pressure,
-                "humidity": self.sensor.data.humidity,
-                "gas_resistance": self.sensor.data.gas_resistance
-            }
+            gas_resistance = self.sensor.data.gas_resistance
+
+            # Actualizo el valor del gas base como referencia
+            if gas_resistance > self.gas_baseline:
+                self.gas_baseline = gas_resistance
+
+            return gas_resistance
+
+        return None
+
+    def air_quality(self):
+        """
+        Devuelve la lectura de la resistencia a gases y devuelve la calidad
+        en porcentaje del 1-100%.
+        :return: Float|None
+        """
+        if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
+            gas = self.sensor.data.gas_resistance
+
+            # Actualizo el valor del gas base como referencia
+            if gas > self.gas_baseline:
+                self.gas_baseline = gas
+
+            gas_offset = self.gas_baseline - gas
+
+            hum = self.sensor.data.humidity
+            hum_offset = hum - self.hum_baseline
+
+            # Calculate hum_score as the distance from the hum_baseline.
+            if hum_offset > 0:
+                hum_score = (100 - self.hum_baseline - hum_offset)
+                hum_score /= (100 - self.hum_baseline)
+                hum_score *= (self.hum_weighting * 100)
+
+            else:
+                hum_score = (self.hum_baseline + hum_offset)
+                hum_score /= self.hum_baseline
+                hum_score *= (self.hum_weighting * 100)
+
+            # Calculate gas_score as the distance from the gas_baseline.
+            if gas_offset > 0:
+                gas_score = (gas / self.gas_baseline)
+                gas_score *= (100 - (self.hum_weighting * 100))
+
+            else:
+                gas_score = 100 - (self.hum_weighting * 100)
+
+            # Calculate air_quality_score.
+            air_quality_score = hum_score + gas_score
+
+            return air_quality_score
 
         return None
 
@@ -156,7 +213,8 @@ class BME680:
                 "temperature": self.sensor.data.temperature,
                 "pressure": self.sensor.data.pressure,
                 "humidity": self.sensor.data.humidity,
-                "gas_resistance": self.sensor.data.gas_resistance
+                "gas_resistance": self.sensor.data.gas_resistance,
+                "air_quality": self.sensor.data.air_quality
             }
 
         return None
@@ -203,6 +261,15 @@ class BME680:
                 },
                 'others': None,
             },
+            'air_quality': {
+                'type': 'Numeric',
+                'params': {
+                    'precision': 15,
+                    'asdecimal': True,
+                    'scale': 4
+                },
+                'others': None,
+            },
             'created_at': {
                 'type': 'DateTime',
                 'params': None,
@@ -220,6 +287,9 @@ class BME680:
         datas = self.get_all_data()
 
         if datas:
-            for sensor, data in self.get_all_data():
-                print('Valor del sensor ' + sensor + ': ' + data)
+            print('Pintando debug para BME680')
+            print(datas)
+
+            for sensor, data in datas.items():
+                print('Valor del sensor ' + str(sensor) + ': ' + str(data))
 
