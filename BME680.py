@@ -44,7 +44,6 @@
 
 
 import bme680
-import time
 
 
 class BME680:
@@ -102,21 +101,6 @@ class BME680:
                 if isinstance(value, int):
                     print('{}: {}'.format(name, value))
 
-    def read_all_sensors(self):
-        """
-        Devuelve un diccionario con todas las lecturas si se han podido tomar.
-        :return:
-        """
-        if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
-            return {
-                "temperature": self.sensor.data.temperature,
-                "pressure": self.sensor.data.pressure,
-                "humidity": self.sensor.data.humidity,
-                "gas_resistance": self.sensor.data.gas_resistance
-            }
-
-        return None
-
     def read_temperature(self):
         """
         Devuelve la lectura de la temperatura.
@@ -161,3 +145,32 @@ class BME680:
             }
 
         return None
+
+    def get_all_data(self):
+        """
+        Devuelve un diccionario con todas las lecturas si se han podido tomar.
+        :return:
+        """
+        if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
+            return {
+                "temperature": self.sensor.data.temperature,
+                "pressure": self.sensor.data.pressure,
+                "humidity": self.sensor.data.humidity,
+                "gas_resistance": self.sensor.data.gas_resistance
+            }
+
+        return None
+
+    def tablemodel(self):
+        """
+        Plantea campos como modelo de datos para una base de datos y poder ser
+        tomados desde el exterior.
+        """
+        pass
+
+    def debug(self):
+        """
+        Función para depurar funcionamiento del modelo proyectando datos por
+        consola.
+        """
+        pass
