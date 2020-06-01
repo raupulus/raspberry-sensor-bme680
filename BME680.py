@@ -55,7 +55,7 @@ class BME680:
         if primary:
             self.sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
         else:
-            self.sensor = bme680.BME680(bme680.I2C_ADDR_SECUNDARY)
+            self.sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY)
 
         # Calibrando datos
         self.calibrate_sensor()
@@ -71,7 +71,7 @@ class BME680:
         self.sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
 
         # Lectura inicial de todos los datos
-        print('BME680 → Lectura inicial:')
+        print('\nBME680 → Lectura inicial:')
         for name in dir(self.sensor.data):
             value = getattr(self.sensor.data, name)
 
@@ -79,7 +79,7 @@ class BME680:
                 print('{}: {}'.format(name, value))
 
         # Estableciendo perfiles
-        print('BME680 → Estableciendo perfiles:')
+        print('\nBME680 → Estableciendo perfiles:')
         self.sensor.set_gas_heater_temperature(320)
         self.sensor.set_gas_heater_duration(150)
         self.sensor.select_gas_heater_profile(0)
@@ -91,7 +91,7 @@ class BME680:
         """
         sensor = self.sensor
 
-        print('BME680 → Calibrando sensor:')
+        print('\nBME680 → Calibrando sensor:')
 
         for name in dir(self.sensor.calibration_data):
 
@@ -217,6 +217,9 @@ class BME680:
         Función para depurar funcionamiento del modelo proyectando datos por
         consola.
         """
-        for sensor, data in self.get_all_data():
-            print('Valor del sensor ' + sensor + ': ' + data)
+        datas = self.get_all_data()
+
+        if datas:
+            for sensor, data in self.get_all_data():
+                print('Valor del sensor ' + sensor + ': ' + data)
 

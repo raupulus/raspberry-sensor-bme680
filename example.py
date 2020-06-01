@@ -21,7 +21,7 @@
 # @copyright  Copyright © 2020 Raúl Caro Pastorino
 # @license    https://wwww.gnu.org/licenses/gpl.txt
 
-# Copyright (C) 2019  Raúl Caro Pastorino
+# Copyright (C) 2020  Raúl Caro Pastorino
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@
 from time import sleep
 from BME680 import BME680
 
-bme680 = BME680()
+bme680 = BME680(primary=False)
 
 try:
     while True:
