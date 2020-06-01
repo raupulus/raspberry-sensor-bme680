@@ -214,7 +214,7 @@ class BME680:
                 "pressure": self.sensor.data.pressure,
                 "humidity": self.sensor.data.humidity,
                 "gas_resistance": self.sensor.data.gas_resistance,
-                "air_quality": self.sensor.data.air_quality
+                "air_quality": self.air_quality
             }
 
         return None
@@ -288,7 +288,6 @@ class BME680:
 
         if datas:
             print('Pintando debug para BME680')
-            print(datas)
 
             for sensor, data in datas.items():
                 print('Valor del sensor ' + str(sensor) + ': ' + str(data))
