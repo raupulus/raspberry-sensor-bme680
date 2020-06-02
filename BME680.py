@@ -158,6 +158,8 @@ class BME680(AbstractModel):
         Devuelve la lectura de la temperatura.
         :return: Float|None
         """
+        time.sleep(0.2)
+
         if self.sensor.get_sensor_data():
             return self.sensor.data.temperature
 
@@ -168,6 +170,8 @@ class BME680(AbstractModel):
         Devuelve la lectura de la presión.
         :return: Float|None
         """
+        time.sleep(0.2)
+
         if self.sensor.get_sensor_data():
             return self.sensor.data.pressure
 
@@ -178,6 +182,8 @@ class BME680(AbstractModel):
         Devuelve la lectura de la humedad.
         :return: Float|None
         """
+        time.sleep(0.2)
+
         if self.sensor.get_sensor_data():
             return self.sensor.data.humidity
 
