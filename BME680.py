@@ -68,7 +68,7 @@ class BME680(AbstractModel):
     # Indica si se activa el modo debug para mostrar más información.
     mode_debug = False
 
-    def __init__(self, primary=True, mode_debug=False):
+    def __init__(self, primary=True, mode_debug=False, calibrate=False):
         # Instanciando sensor.
         if primary:
             self.sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
@@ -105,9 +105,17 @@ class BME680(AbstractModel):
         self.sensor.select_gas_heater_profile(0)
 
         # Toma muestras para calibrar el sensor de gas
-        start_new_thread(self.calibrate_gas, ())
+        if calibrate:
+            start_new_thread(self.calibrate_gas, ())
+        else:
+            self.gas_baseline = 100000.0
 
     def msg(self, message):
+        """
+        Muestra mensajes solo cuando está activado el modo debug.
+        :param message:
+        :return:
+        """
         if not self.mode_debug:
             return
 

@@ -48,24 +48,42 @@ from BME680_humidity import BME680_humidity
 from BME680_pressure import BME680_pressure
 from BME680_temperature import BME680_temperature
 
-bme680 = BME680(primary=False, mode_debug=True)
-air_quality = BME680_air_quality(primary=False, mode_debug=True)
+#bme680 = BME680(primary=False, mode_debug=True, calibrate=True)
+#sleep(2)
+air_quality = BME680_air_quality(primary=False, mode_debug=True, calibrate=True)
+sleep(2)
 humidity = BME680_humidity(primary=False, mode_debug=True)
+sleep(2)
 pressure = BME680_pressure(primary=False, mode_debug=True)
+sleep(2)
 temperature = BME680_temperature(primary=False, mode_debug=True)
+sleep(2)
 
 try:
     while True:
-        print('Debug Clase Padre')
-        bme680.debug()
+        #print('Debug Clase Padre')
+        #bme680.debug()
 
         sleep(3)
         print('')
+
         print('Debug de cada Clase Hija')
+
         air_quality.debug()
+
+        sleep(1)
+
         humidity.debug()
+
+        sleep(1)
+
         pressure.debug()
+
+        sleep(1)
+
         temperature.debug()
+
+        sleep(10)
 
 except KeyboardInterrupt:
     pass
