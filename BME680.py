@@ -60,7 +60,11 @@ class BME680:
     # calculation of air_quality_score (25:75, humidity:gas)
     hum_weighting = 0.25
 
-    gas_baseline = 300000.00
+
+    # TODO → Tomar 50 muestras al iniciar y añadir ese valor aquí,
+    # quitarlo de funciones para resistencia y calidad de aire.
+    # https://github.com/pimoroni/bme680-python/blob/master/examples/indoor-air-quality.py
+    gas_baseline = 250000.00
 
     def __init__(self, primary=True):
         # Instanciando sensor.
