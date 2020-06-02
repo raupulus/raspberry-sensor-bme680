@@ -43,6 +43,10 @@
 
 from time import sleep
 from BME680 import BME680
+from BME680_air_quality import BME680_air_quality
+from BME680_humidity import BME680_humidity
+from BME680_pressure import BME680_pressure
+from BME680_temperature import BME680_temperature
 
 bme680 = BME680(primary=False, mode_debug=True)
 
@@ -54,12 +58,10 @@ try:
         sleep(3)
         print('')
         print('Debug de cada Clase Hija')
-        #???.debug()
-        #???.debug()
-        #???.debug()
-        #???.debug()
-
-        sleep(3)
+        BME680_air_quality.debug()
+        BME680_humidity.debug()
+        BME680_pressure.debug()
+        BME680_temperature.debug()
 
 except KeyboardInterrupt:
     pass
