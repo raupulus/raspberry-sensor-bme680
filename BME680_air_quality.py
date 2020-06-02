@@ -40,10 +40,9 @@
 import datetime
 
 from BME680 import BME680
-from AbstractModel import AbstractModel
 
 
-class BME680_air_quality(AbstractModel, BME680):
+class BME680_air_quality(BME680):
     table_name = 'table_air_quality'
 
     def get_all_datas(self):

@@ -40,10 +40,9 @@
 import datetime
 
 from BME680 import BME680
-from AbstractModel import AbstractModel
 
 
-class BME680_humidity(AbstractModel, BME680):
+class BME680_humidity(BME680):
     table_name = 'table_humidity'
 
     def get_all_datas(self):

@@ -40,10 +40,9 @@
 import datetime
 
 from BME680 import BME680
-from AbstractModel import AbstractModel
 
 
-class BME680_temperature(AbstractModel, BME680):
+class BME680_temperature(BME680):
     table_name = 'table_temperature'
 
     def get_all_datas(self):
