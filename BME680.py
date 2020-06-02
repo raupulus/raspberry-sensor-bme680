@@ -65,12 +65,17 @@ class BME680(AbstractModel):
     # Almacena la media de las muestras tomadas al iniciar para calibrar.
     gas_baseline = None
 
-    def __init__(self, primary=True):
+    # Indica si se activa el modo debug para mostrar más información.
+    mode_debug = False
+
+    def __init__(self, primary=True, mode_debug=False):
         # Instanciando sensor.
         if primary:
             self.sensor = bme680.BME680(bme680.I2C_ADDR_PRIMARY)
         else:
             self.sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY)
+
+        self.mode_debug = mode_debug
 
         # Calibrando datos
         self.calibrate_sensor()
@@ -94,13 +99,20 @@ class BME680(AbstractModel):
                 print('{}: {}'.format(name, value))
 
         # Estableciendo perfiles
-        print('\nBME680 → Estableciendo perfiles:')
+        self.msg('BME680 → Estableciendo perfiles')
         self.sensor.set_gas_heater_temperature(320)
         self.sensor.set_gas_heater_duration(150)
         self.sensor.select_gas_heater_profile(0)
 
         # Toma muestras para calibrar el sensor de gas
         start_new_thread(self.calibrate_gas, ())
+
+    def msg(self, message):
+        if not self.mode_debug:
+            return
+
+        print('\n')
+        print(message)
 
     def calibrate_gas(self):
         """
@@ -114,27 +126,24 @@ class BME680(AbstractModel):
 
         burn_in_data = []
 
-        print('Iniciando calibración de gas')
+        self.msg('Iniciando calibración de gas')
 
         while curr_time - start_time < burn_in_time:
             curr_time = time.time()
             if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
                 gas = self.sensor.data.gas_resistance
                 burn_in_data.append(gas)
-                print('Gas: {0} Ohms'.format(gas))
+                self.msg('Gas: {0} Ohms'.format(gas))
                 time.sleep(1)
 
         self.gas_baseline = (sum(burn_in_data[-50:]) / 50.0) or 100000.0
-
-        print('Baseline:')
-        print(self.gas_baseline)
 
     def calibrate_sensor(self):
         """
         Calibra todas las lecturas.
         :return:
         """
-        print('\nBME680 → Calibrando sensor:')
+        self.msg('BME680 → Calibrando sensor:')
 
         for name in dir(self.sensor.calibration_data):
 
@@ -242,10 +251,10 @@ class BME680(AbstractModel):
         """
         if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
             return {
-                "temperature": self.sensor.data.temperature,
-                "pressure": self.sensor.data.pressure,
-                "humidity": self.sensor.data.humidity,
-                "gas_resistance": self.sensor.data.gas_resistance,
+                "temperature": self.read_temperature(),
+                "pressure": self.read_pressure(),
+                "humidity": self.read_humidity(),
+                "gas_resistance": self.read_gas_resistance(),
                 "air_quality": self.air_quality()
             }
 

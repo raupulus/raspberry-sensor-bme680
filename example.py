@@ -44,7 +44,7 @@
 from time import sleep
 from BME680 import BME680
 
-bme680 = BME680(primary=False)
+bme680 = BME680(primary=False, mode_debug=True)
 
 try:
     while True:
