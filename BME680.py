@@ -205,7 +205,7 @@ class BME680(AbstractModel):
 
         return None
 
-    def air_quality(self):
+    def read_air_quality(self):
         """
         Devuelve la lectura de la resistencia a gases y devuelve la calidad
         en porcentaje del 1-100%.
@@ -261,7 +261,7 @@ class BME680(AbstractModel):
                 "pressure": self.read_pressure(),
                 "humidity": self.read_humidity(),
                 "gas_resistance": self.read_gas_resistance(),
-                "air_quality": self.air_quality()
+                "air_quality": self.read_air_quality()
             }
 
         return None
