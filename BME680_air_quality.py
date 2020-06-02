@@ -9,15 +9,15 @@
 # @twitter    https://twitter.com/fryntiz
 # @telegram   https://t.me/fryntiz
 
-# Create Date: 2019
+# Create Date: 2020
 #
 # Revision 0.01 - File Created
 # Additional Comments:
 
-# @copyright  Copyright © 2019 Raúl Caro Pastorino
+# @copyright  Copyright © 2020 Raúl Caro Pastorino
 # @license    https://wwww.gnu.org/licenses/gpl.txt
 
-# Copyright (C) 2019  Raúl Caro Pastorino
+# Copyright (C) 2020  Raúl Caro Pastorino
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,12 +39,12 @@
 # para la parte de temperatura.
 import datetime
 
-from Models.Sensors.BME280 import BME280
-from Models.Sensors.AbstractModel import AbstractModel
+from BME680 import BME680
+from AbstractModel import AbstractModel
 
 
-class BME280_temperature(AbstractModel, BME280):
-    table_name = 'table_temperature'
+class BME680_air_quality(AbstractModel, BME680):
+    table_name = 'table_air_quality'
 
     def get_all_datas(self):
         """
@@ -52,7 +52,8 @@ class BME280_temperature(AbstractModel, BME280):
         según lo tomado con el sensor.
         """
         return {
-            'value': self.read_temperature(),
+            'gas_resistance': self.read_gas_resistance(),
+            'air_quality': self.read_air_quality(),
         }
 
     def tablemodel(self):
@@ -61,7 +62,16 @@ class BME280_temperature(AbstractModel, BME280):
         tomados desde el exterior.
         """
         return {
-            'value': {
+            'gas_resistance': {
+                'type': 'Numeric',
+                'params': {
+                    'precision': 22,
+                    'asdecimal': True,
+                    'scale': 11
+                },
+                'others': None,
+            },
+            'air_quality': {
                 'type': 'Numeric',
                 'params': {
                     'precision': 15,
@@ -84,5 +94,5 @@ class BME280_temperature(AbstractModel, BME280):
         Función para depurar funcionamiento del modelo proyectando datos por
         consola.
         """
-        print('La temperatura actual es de: ', self.read_temperature())
-
+        print('La Resistencia de gas es de: ', self.read_gas_resistance())
+        print('La Calidad actual del aire es: ', self.read_air_quality())
