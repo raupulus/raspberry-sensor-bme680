@@ -60,7 +60,6 @@ class BME680:
     # calculation of air_quality_score (25:75, humidity:gas)
     hum_weighting = 0.25
 
-
     # Almacena la media de las muestras tomadas al iniciar para calibrar.
     gas_baseline = None
 
@@ -106,9 +105,12 @@ class BME680:
         """
         start_time = time.time()
         curr_time = time.time()
-        burn_in_time = 300
+        #burn_in_time = 300
+        burn_in_time = 20
 
         burn_in_data = []
+
+        print('Iniciando calibración de gas')
 
         while curr_time - start_time < burn_in_time:
             curr_time = time.time()
@@ -118,11 +120,14 @@ class BME680:
                 print('Gas: {0} Ohms'.format(gas))
                 time.sleep(1)
 
-        self.gas_baseline = sum(burn_in_data[-50:]) / 50.0
+        self.gas_baseline = (sum(burn_in_data[-50:]) / 50.0) or 100000.0
+
+        print('Baseline:')
+        print(self.gas_baseline)
 
     def calibrate_sensors(self):
         """
-        Calibra el sensor.
+        Calibra todas las lecturas.
         :return:
         """
         print('\nBME680 → Calibrando sensor:')
