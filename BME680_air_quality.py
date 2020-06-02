@@ -35,7 +35,7 @@
 # Guía de estilos aplicada: PEP8
 
 # #           Descripción           # #
-# Clase que extiende de BME280 para representar el modelo del sensor solo
+# Clase que extiende de BME680 para representar el modelo del sensor solo
 # para la parte de temperatura.
 import datetime
 
