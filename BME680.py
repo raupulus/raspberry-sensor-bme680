@@ -61,10 +61,8 @@ class BME680:
     hum_weighting = 0.25
 
 
-    # TODO → Tomar 50 muestras al iniciar y añadir ese valor aquí,
-    # quitarlo de funciones para resistencia y calidad de aire.
-    # https://github.com/pimoroni/bme680-python/blob/master/examples/indoor-air-quality.py
-    gas_baseline = 250000.00
+    # Almacena la media de las muestras tomadas al iniciar para calibrar.
+    gas_baseline = None
 
     def __init__(self, primary=True):
         # Instanciando sensor.
@@ -74,7 +72,7 @@ class BME680:
             self.sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY)
 
         # Calibrando datos
-        self.calibrate_sensor()
+        self.calibrate_sensors()
 
         # Configurando datos
         # These oversampling settings can be tweaked to change the balance
@@ -100,13 +98,33 @@ class BME680:
         self.sensor.set_gas_heater_duration(150)
         self.sensor.select_gas_heater_profile(0)
 
-    def calibrate_sensor(self):
+    def calibrate_gas(self):
+        """
+        Realiza un calibrado del sensor de gas para calcular posteriormente
+        el porcentaje de calidad del aire.
+        :return:
+        """
+        start_time = time.time()
+        curr_time = time.time()
+        burn_in_time = 300
+
+        burn_in_data = []
+
+        while curr_time - start_time < burn_in_time:
+            curr_time = time.time()
+            if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
+                gas = self.sensor.data.gas_resistance
+                burn_in_data.append(gas)
+                print('Gas: {0} Ohms'.format(gas))
+                time.sleep(1)
+
+        self.gas_baseline = sum(burn_in_data[-50:]) / 50.0
+
+    def calibrate_sensors(self):
         """
         Calibra el sensor.
         :return:
         """
-        sensor = self.sensor
-
         print('\nBME680 → Calibrando sensor:')
 
         for name in dir(self.sensor.calibration_data):
@@ -116,6 +134,9 @@ class BME680:
 
                 if isinstance(value, int):
                     print('{}: {}'.format(name, value))
+
+        # Toma muestras para calibrar el sensor de gas
+        self.calibrate_gas()
 
     def read_temperature(self):
         """
@@ -153,12 +174,14 @@ class BME680:
         :return: Float|None
         """
         time.sleep(0.2)
-        if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
+        if self.sensor.get_sensor_data() and \
+                self.sensor.data.heat_stable and \
+                self.gas_baseline:
             gas_resistance = self.sensor.data.gas_resistance
 
             # Actualizo el valor del gas base como referencia
-            if gas_resistance > self.gas_baseline:
-                self.gas_baseline = gas_resistance
+            #if gas_resistance > self.gas_baseline:
+            #    self.gas_baseline = gas_resistance
 
             return gas_resistance
 
@@ -173,12 +196,14 @@ class BME680:
 
         time.sleep(0.2)
 
-        if self.sensor.get_sensor_data() and self.sensor.data.heat_stable:
+        if self.sensor.get_sensor_data() and \
+                self.sensor.data.heat_stable and \
+                self.gas_baseline:
             gas = self.sensor.data.gas_resistance
 
             # Actualizo el valor del gas base como referencia
-            if gas > self.gas_baseline:
-                self.gas_baseline = gas
+            #if gas > self.gas_baseline:
+            #    self.gas_baseline = gas
 
             gas_offset = self.gas_baseline - gas
 
