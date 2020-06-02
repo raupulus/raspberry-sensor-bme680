@@ -46,9 +46,11 @@
 import bme680
 import datetime
 import time
+from AbstractModel import AbstractModel
+from _thread import start_new_thread
 
 
-class BME680:
+class BME680(AbstractModel):
     table_name = 'table_weather'
     sensor = None
 
@@ -98,7 +100,7 @@ class BME680:
         self.sensor.select_gas_heater_profile(0)
 
         # Toma muestras para calibrar el sensor de gas
-        self.calibrate_gas()
+        start_new_thread(self.calibrate_gas, ())
 
     def calibrate_gas(self):
         """
@@ -108,8 +110,7 @@ class BME680:
         """
         start_time = time.time()
         curr_time = time.time()
-        #burn_in_time = 300
-        burn_in_time = 20
+        burn_in_time = 300
 
         burn_in_data = []
 
@@ -179,14 +180,11 @@ class BME680:
         :return: Float|None
         """
         time.sleep(0.2)
+
         if self.sensor.get_sensor_data() and \
                 self.sensor.data.heat_stable and \
                 self.gas_baseline:
             gas_resistance = self.sensor.data.gas_resistance
-
-            # Actualizo el valor del gas base como referencia
-            #if gas_resistance > self.gas_baseline:
-            #    self.gas_baseline = gas_resistance
 
             return gas_resistance
 
@@ -205,10 +203,6 @@ class BME680:
                 self.sensor.data.heat_stable and \
                 self.gas_baseline:
             gas = self.sensor.data.gas_resistance
-
-            # Actualizo el valor del gas base como referencia
-            #if gas > self.gas_baseline:
-            #    self.gas_baseline = gas
 
             gas_offset = self.gas_baseline - gas
 
