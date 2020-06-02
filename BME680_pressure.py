@@ -9,15 +9,15 @@
 # @twitter    https://twitter.com/fryntiz
 # @telegram   https://t.me/fryntiz
 
-# Create Date: 2019
+# Create Date: 2020
 #
 # Revision 0.01 - File Created
 # Additional Comments:
 
-# @copyright  Copyright © 2019 Raúl Caro Pastorino
+# @copyright  Copyright © 2020 Raúl Caro Pastorino
 # @license    https://wwww.gnu.org/licenses/gpl.txt
 
-# Copyright (C) 2019  Raúl Caro Pastorino
+# Copyright (C) 2020  Raúl Caro Pastorino
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,15 +35,15 @@
 # Guía de estilos aplicada: PEP8
 
 # #           Descripción           # #
-# Clase que extiende de BME280 para representar el modelo del sensor solo
+# Clase que extiende de BME680 para representar el modelo del sensor solo
 # para la parte de presión.
 import datetime
 
-from Models.Sensors.BME280 import BME280
-from Models.Sensors.AbstractModel import AbstractModel
+from BME680 import BME680
+from AbstractModel import AbstractModel
 
 
-class BME280_pressure(AbstractModel, BME280):
+class BME680_pressure(AbstractModel, BME680):
     table_name = 'table_pressure'
 
     def get_all_datas(self):
