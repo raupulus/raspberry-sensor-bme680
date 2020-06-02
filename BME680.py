@@ -235,7 +235,7 @@ class BME680(AbstractModel):
 
         return None
 
-    def get_all_data(self):
+    def get_all_datas(self):
         """
         Devuelve un diccionario con todas las lecturas si se han podido tomar.
         :return:
@@ -316,7 +316,7 @@ class BME680(AbstractModel):
         Función para depurar funcionamiento del modelo proyectando datos por
         consola.
         """
-        datas = self.get_all_data()
+        datas = self.get_all_datas()
 
         if datas:
             print('Pintando debug para BME680')
