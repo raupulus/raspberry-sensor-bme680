@@ -71,7 +71,7 @@ class BME680:
             self.sensor = bme680.BME680(bme680.I2C_ADDR_SECONDARY)
 
         # Calibrando datos
-        self.calibrate_sensors()
+        self.calibrate_sensor()
 
         # Configurando datos
         # These oversampling settings can be tweaked to change the balance
@@ -96,6 +96,9 @@ class BME680:
         self.sensor.set_gas_heater_temperature(320)
         self.sensor.set_gas_heater_duration(150)
         self.sensor.select_gas_heater_profile(0)
+
+        # Toma muestras para calibrar el sensor de gas
+        self.calibrate_gas()
 
     def calibrate_gas(self):
         """
@@ -125,7 +128,7 @@ class BME680:
         print('Baseline:')
         print(self.gas_baseline)
 
-    def calibrate_sensors(self):
+    def calibrate_sensor(self):
         """
         Calibra todas las lecturas.
         :return:
@@ -139,9 +142,6 @@ class BME680:
 
                 if isinstance(value, int):
                     print('{}: {}'.format(name, value))
-
-        # Toma muestras para calibrar el sensor de gas
-        self.calibrate_gas()
 
     def read_temperature(self):
         """
